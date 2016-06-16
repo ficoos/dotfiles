@@ -12,6 +12,10 @@ zstyle :compinstall filename '/home/smizrahi/.zshrc'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
+bindkey "^R" history-incremental-search-backward
+setopt HIST_IGNORE_DUPS
+setopt COMPLETE_ALIASES
+zstyle ':completion:*' menu select
 
 alias vim=nvim # prefer neovim
 # git status in prompt
