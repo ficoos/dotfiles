@@ -12,12 +12,32 @@ zstyle :compinstall filename '/home/smizrahi/.zshrc'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
-
 alias vim=nvim # prefer neovim
 # git status in prompt
-source /usr/share/git-core/contrib/completion/git-prompt.sh
-setopt PROMPT_SUBST
-PROMPT='[%n@%m %.%b$(__git_ps1 " (%s)")]%# '
 export PATH=$HOME/.bin:$PATH # Add local bin
 export PATH="$HOME/.cargo/bin:$PATH" # Add rust bin
 
+function zle-line-init zle-keymap-select {
+    VIM_PROMPT="%{$fg_bold[yellow]%} [% NORMAL]%  %{$reset_color%}"
+    RPROMPT="${${KEYMAP/vicmd/$VIM_PROMPT}/(main|viins)/} %*"
+    zle reset-prompt
+}
+
+# Delete and backspace
+bindkey "^W" backward-kill-word
+bindkey "^H" backward-delete-char      # Control-h also deletes the previous char
+bindkey "^U" backward-kill-line
+bindkey '^r' history-incremental-search-backward
+bindkey '^?' backward-delete-char      # [Backspace] - delete backward
+
+# Set up prompt
+autoload -Uz promptinit
+promptinit
+autoload -Uz colors && colors
+zle -N zle-line-init
+zle -N zle-keymap-select
+setopt PROMPT_SUBST
+source /usr/share/git-core/contrib/completion/git-prompt.sh
+
+PROMPT='[%n@%m %.%b$(__git_ps1 " (%s)")]%# '
+RPROMPT='%t'
