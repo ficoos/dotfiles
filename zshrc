@@ -32,7 +32,6 @@ function zle-line-init zle-keymap-select {
 bindkey "^W" backward-kill-word
 bindkey "^H" backward-delete-char      # Control-h also deletes the previous char
 bindkey "^U" backward-kill-line
-bindkey '^r' history-incremental-search-backward
 bindkey '^?' backward-delete-char      # [Backspace] - delete backward
 
 # Set up prompt
