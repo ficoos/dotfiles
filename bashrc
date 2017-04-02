@@ -9,10 +9,9 @@ fi
 # export SYSTEMD_PAGER=
 
 # User specific aliases and functions
+. /usr/share/git-core/contrib/completion/git-prompt.sh
 
-source /usr/share/git-core/contrib/completion/git-prompt.sh
-export PS1='[\u@\h \W$(declare -F __git_ps1 &>/dev/null && __git_ps1 " (%s)")]\$ '
-export PEPPER_FLASH_VERSION=$(grep '"version":' /opt/google/chrome*/PepperFlash/manifest.json| grep -Po '(?<=version": ")(?:\d|\.)*')
+export PS1='[\u@\h \W$(__git_ps1)]\$ '
 
 PATH=$HOME/.bin:$PATH
 export PATH="$HOME/.cargo/bin:$PATH"
