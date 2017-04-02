@@ -1,0 +1,25 @@
+[core]
+	editor = nvim
+	excludesfile = ~/.gitignore
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	lo = log --oneline --decorate
+	addi = add -i
+[merge]
+	tool = meld
+[diff]
+	tool = meld
+	renames = true
+[user]
+	name = Saggi Mizrahi
+	email = saggi@mizrahi.cc
+[color]
+	ui = auto
+
+[push]
+	default = simple
+[sendemail]
+	smtpserver = smtp.redhat.com
