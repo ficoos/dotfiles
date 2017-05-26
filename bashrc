@@ -11,29 +11,9 @@ fi
 # User specific aliases and functions
 . /usr/share/git-core/contrib/completion/git-prompt.sh
 
-export PS1='[\u@\h \W$(__git_ps1)]\$ '
+export PS1='\[\033[38;5;2m\][\t]\[$(tput sgr0)\]\[\033[38;5;15m\] \u@\h \[$(tput sgr0)\]\[\033[38;5;9m\]\w\[$(tput sgr0)\]\[\033[38;5;15m\]\[$(tput sgr0)\]\[\033[38;5;12m\]$(__git_ps1)\[\033[38;5;15m\]\n\\$ \[$(tput sgr0)\]'
 
 PATH=$HOME/.bin:$PATH
 export PATH="$HOME/.cargo/bin:$PATH"
 alias vim=nvim
 source $HOME/.rustup.bash-completion
-
-if [ "$PS1" ]; then
-    case $TERM in
-    xterm*|vte*)
-      if [ -e /etc/sysconfig/bash-prompt-xterm ]; then
-          PROMPT_COMMAND=/etc/sysconfig/bash-prompt-xterm
-      elif [ "${VTE_VERSION:-0}" -ge 3405 ]; then
-          PROMPT_COMMAND="__vte_prompt_command"
-      else
-          PROMPT_COMMAND='printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
-      fi
-      ;;
-    screen*)
-	    PROMPT_COMMAND='printf "\033k%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "$(basename ${PWD/#$HOME/\~})"'
-      ;;
-    *)
-            PROMPT_COMMAND='printf "\033]0;%s\007" "${PWD/#$HOME/\~}"'
-      ;;
-    esac
-fi
