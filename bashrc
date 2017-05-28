@@ -17,3 +17,4 @@ PATH=$HOME/.bin:$PATH
 export PATH="$HOME/.cargo/bin:$PATH"
 alias vim=nvim
 source $HOME/.rustup.bash-completion
+export RUST_SRC_PATH=$HOME/.rustup/toolchains/$(rustup toolchain list | grep default | awk {'print $1'})/lib/rustlib/src/rust/src/
