@@ -60,3 +60,9 @@
       dest: "{{ fish_configuration_dir }}/config.fish"
       mode: 0664
 
+  - name: configure pulseaudio
+    become: yes
+    replace:
+      path: /etc/pulse/daemon.conf
+      regexp: '^;?\s*?(flat-volumes\s*=\s*)\w+'
+      replace: '\n\1no'
