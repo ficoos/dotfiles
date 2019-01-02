@@ -30,11 +30,10 @@ export PS1='\[\033[32m\][\t]\[\033[0m\]\] \u\[\033[38;5;8m\]@\[\033[38;5;7m\]\]\
 
 PATH=$HOME/.bin:$PATH
 export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/go/bin:$PATH"
 export EDITOR=nvim
 alias vim=nvim
 alias viconf=nvim\ ~/.config/nvim/init.vim
 alias pfzf=pass\ fzf
 export PASSWORD_STORE_ENABLE_EXTENSIONS=true
-source $HOME/.rustup.bash-completion
-export RUST_SRC_PATH=$HOME/.rustup/toolchains/$(rustup toolchain list | grep default | awk {'print $1'})/lib/rustlib/src/rust/src/
 [[ $- == *i* ]] && fortune | cowsay
