@@ -30,7 +30,7 @@ link_file bin .local/bin
 
 # youtube-dl
 youtube_dl_path=~/.local/bin/youtube-dl
-if [ ! -f "$youtube_dl_path" ];
+if [ ! -f "$youtube_dl_path" ]
 then
     echo "Fetching youtube-dl"
     download_file https://yt-dl.org/downloads/latest/youtube-dl "$youtube_dl_path"
