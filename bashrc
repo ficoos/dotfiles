@@ -35,5 +35,7 @@ export EDITOR=nvim
 alias vim=nvim
 alias viconf=nvim\ ~/.config/nvim/init.vim
 alias pfzf=pass\ fzf
+source $HOME/.rustup.bash-completion
+export RUST_SRC_PATH=$HOME/.rustup/toolchains/$(rustup toolchain list | grep default | awk {'print $1'})/lib/rustlib/src/rust/src/
 export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 [[ $- == *i* ]] && fortune | cowsay

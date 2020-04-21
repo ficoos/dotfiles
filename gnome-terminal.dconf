@@ -1,0 +1,25 @@
+[legacy]
+default-show-menubar=false
+menu-accelerator-enabled=false
+schema-version=uint32 3
+shortcuts-enabled=true
+
+[legacy/keybindings]
+full-screen='<Shift><Alt>f'
+
+[legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+allow-bold=true
+background-color='#000000000000'
+background-transparency-percent=12
+bold-color='#000000000000'
+bold-color-same-as-fg=true
+bold-is-bright=true
+cursor-shape='block'
+font='DejaVuSansMono Nerd Font Mono 10'
+foreground-color='#FFFFFFFFFFFF'
+palette=['rgb(0,0,0)', 'rgb(205,0,0)', 'rgb(0,205,0)', 'rgb(205,205,0)', 'rgb(99,99,215)', 'rgb(205,0,205)', 'rgb(0,205,205)', 'rgb(185,185,185)', 'rgb(64,64,64)', 'rgb(255,0,0)', 'rgb(0,255,0)', 'rgb(255,255,0)', 'rgb(106,106,255)', 'rgb(255,0,255)', 'rgb(0,255,255)', 'rgb(255,255,255)']
+scrollbar-policy='never'
+use-system-font=false
+use-theme-colors=false
+use-transparent-background=false
+visible-name='Default'

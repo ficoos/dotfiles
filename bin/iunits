@@ -1,0 +1,36 @@
+#!/bin/bash
+UNITS_FILE=~/.config/iunits.json
+
+function get_field() {
+    echo -n "$1" | jq -r ".\"$2\""
+}
+
+function fuzzy_select() {
+    prompt=$1
+    fzf -1 --prompt "$prompt: "
+    #rofi -dmenu -matching fuzzy -p "$prompt"
+}
+
+jq < "$UNITS_FILE" > /dev/null || exit 1
+
+title=$(jq -r '.[] | .title' < "$UNITS_FILE" | fuzzy_select "Convert from") || exit 1
+unit_from=$(jq ".[] | select(.title == \"$title\")" < "$UNITS_FILE")
+domain=$(get_field "$unit_from" "domain")
+title=$(jq -r ".[] | select(.domain == \"$domain\") | select(.title != \"$title\") | .title" < "$UNITS_FILE" | fuzzy_select "To") || exit 1
+unit_to=$(jq ".[] | select(.title == \"$title\")" < "$UNITS_FILE")
+
+prompt=$(get_field "$unit_from" "prompt")
+from_format=$(get_field "$unit_from" "from-format")
+to_arg=$(get_field "$unit_to" "unit")
+display_format=$(get_field "$unit_to" "display-format")
+title_from=$(get_field "$unit_from" "title")
+title_to=$(get_field "$unit_to" "title")
+
+printf "%s -> %s\n" "$title_from" "$title_to"
+while true
+do
+    read -r -p "$prompt: " value || break
+    from_arg=$(printf "$from_format" "$value")
+    result=$(units -1 --compact -r "$from_arg" "$to_arg") && printf ">> $display_format\n" "$result" || exit 1
+done
+echo

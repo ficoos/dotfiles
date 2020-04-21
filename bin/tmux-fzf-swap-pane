@@ -1,0 +1,20 @@
+#!/bin/sh
+if [ "$1" == "select" ]
+then
+    tmux-title select-pane
+    pane_id=$(tmux display-message -p -F '#{pane_id}')
+    pane=$(tmux list-panes -s -F '#{pane_id} #{pane_title}' | grep -v -P "^$pane_id " | sed -r -e 's:(%[[:digit:]]+) (.*):\x1b[90m[\1]\x1b[0m\t\2:g' | fzf --ansi | grep -o -P '(?<=\[)%\d+(?=\])')
+    is_pane_selected=$?
+    tmux swap-pane -t "$2"
+    if [ $is_pane_selected -eq 0 ]
+    then
+        tmux swap-pane -s "$pane" -t "$2"
+        exit 0
+    fi
+    exit 1
+fi
+pane_id=$(tmux display-message -p -F '#{pane_id}')
+fzf_pane=$(tmux new-window -d -P -n "*scratch*" sh -c "$0 select $pane_id" -F '#{pane_id}')
+tmux swap-pane -t $fzf_pane
+#pane=$(tmux list-panes -s -F '[#{pane_id}] #{pane_title}' | fzf | grep -o -P '(?<=^\[)%\d+(?=\])') && \
+#tmux swap-pane -t $pane || tmux swap_pant $fzf_pane

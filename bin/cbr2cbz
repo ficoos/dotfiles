@@ -1,0 +1,58 @@
+#!/bin/bash
+echo "Converting CBRs to CBZs"
+
+# Set the "field separator" to something other than spaces/newlines" so that spaces
+# in the file names don't mess things up. I'm using the pipe symbol ("|") as it is very
+# unlikely to appear in a file name.
+IFS="|"
+
+# Set name for the temp dir. This directory will be created under WORDDIR
+TEMPDIR="/tmp/cbr2cbz_$$"
+
+echo "Working from directory $SOURCEDIR"
+
+# We need an empty directory to work in, so we'll create a temp directory here
+mkdir $TEMPDIR
+# and step into it
+cd $TEMPDIR
+
+while [ -n "$1" ]; do
+	CBRFILE=$(readlink -f $1)
+	echo "Converting $CBRFILE"
+
+	# Now for the actual work. First, extract the base file name (without the extension)
+	# using the "basename" command. Warning: more backtics.
+	BASENAME=`basename $CBRFILE ".cbr"`
+
+	# And the directory path for that file, so we know where to put the finished ".cbz"
+	# file.
+	DIRNAME=`dirname $CBRFILE`
+
+	# Now, build the "new" file name,
+	NEWNAME="$BASENAME.cbz"
+
+	# We use RAR file's name to create folder for unpacked files
+	mkdir "$BASENAME"
+	# and unpack the rar file into it
+	unrar x "$CBRFILE" "$BASENAME" && \
+	cd "$BASENAME" && \
+	 # Lets ensure the permissions allow us to pack everything
+	chmod u+rw -R ./* && \
+	# Put all the extracted files into new ".cbz" file
+	zip --recurse-paths "$NEWNAME" -- * && \
+	# And move it to the directory where we found the original ".cbr" file
+	mv "$NEWNAME" $DIRNAME/"$NEWNAME"
+	# Finally, "cd" back to the original working directory, and delete the temp directory
+	# created earlier.
+	cd .. && \
+	rm -r "$BASENAME" && \
+	# Delete the RAR file also
+	rm "$CBRFILE"
+	shift 1
+done
+
+# At the end we cleanup by removing the temp folder from ram disk
+cd ..
+echo "Conversion Done"
+rm -r "$TEMPDIR"
+

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+systemd-run \
+	--user \
+	--service-type=simple \
+	--no-ask-password \
+	--unit=shaowcat-socks-proxy \
+	ssh -T -D 2001 -N smizrahi@shadowcat

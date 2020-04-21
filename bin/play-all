@@ -1,0 +1,24 @@
+#!/bin/bash
+IS_SHUFFLE=0
+
+function usage() {
+    echo "Usage: $0 [options]"
+    echo
+    echo "  -s, --shuffle   shuffle entries"
+    exit 1
+}
+
+PLAYER=vlc
+
+for i in "$@"
+do
+case $i in
+    -s|--suffle)
+    IS_SHUFFLE=1
+    ;;
+    *)
+    usage
+    ;;
+esac
+done
+find -name '*' -type f -print0 | ([ $IS_SHUFFLE -ne 0 ] && shuf -z || cat) | xargs -0 vlc

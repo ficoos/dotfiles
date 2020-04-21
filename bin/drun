@@ -1,0 +1,2 @@
+#!/bin/sh
+exec rofi -show drun -matching fuzzy -terminal gnome-terminal -drun-show-actions -show-icons -i
