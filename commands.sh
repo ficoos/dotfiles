@@ -21,3 +21,9 @@ function install_package() {
 function dconf_load() {
     dconf load "$1" < "$2"
 }
+
+function download_file() {
+    url="$1"
+    local_path="$2"
+    curl -L "$1" -o "$local_path"
+}

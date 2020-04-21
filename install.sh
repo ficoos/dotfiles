@@ -7,7 +7,13 @@ set -e
 #                                 repo. link-name is relative to $HOME
 # install_package <package-name>: install a package
 
-install_package jq rsync
+install_package \
+    jq \
+    rsync \
+    tmux \
+    kakoune \
+    ranger \
+    ${NULL}
 
 # configure pulseaudio
 grep /etc/pulse/daemon.conf -e '^flat-volumes = no' > /dev/null || \
@@ -18,6 +24,15 @@ grep /etc/pulse/daemon.conf -e '^flat-volumes = no' > /dev/null || \
 
 # user scripts
 link_file bin .local/bin
+
+# youtube-dl
+youtube_dl_path=~/.local/bin/youtube-dl
+if [ ! -f "$youtube_dl_path" ];
+then
+    echo "Fetching youtube-dl"
+    download_file https://yt-dl.org/downloads/latest/youtube-dl "$youtube_dl_path"
+    chmod a+x "$youtube_dl_path"
+fi
 
 # gnome-terminal
 dconf_load /org/gnome/terminal/ gnome-terminal.dconf
