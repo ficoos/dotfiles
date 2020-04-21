@@ -8,11 +8,14 @@ set -e
 # install_package <package-name>: install a package
 
 install_package \
+    fzf \
+    git-all \
     jq \
+    kakoune \
+    pass \
+    ranger \
     rsync \
     tmux \
-    kakoune \
-    ranger \
     ${NULL}
 
 # configure pulseaudio
