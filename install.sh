@@ -63,3 +63,5 @@ link_file gdb-dashboard .gdb-dashboard
 link_file gdbinit .gdbinit
 link_file inputrc .inputrc
 link_file tgdbinit .tgdbinit
+
+echo 'Success!'
