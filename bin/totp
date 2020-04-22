@@ -1,0 +1,33 @@
+#!/usr/bin/python3
+
+import hashlib
+import hmac
+import time
+import argparse
+import base64
+import struct
+
+SIZE_OF_OTP = 6
+
+def get_hotp_token(secret, intervals_no):
+    secret += b"=" * (8 - (len(secret) % 8))
+    key = base64.b32decode(secret, True)
+    msg = struct.pack(">Q", intervals_no)
+    h = hmac.new(key, msg, hashlib.sha1).digest()
+    o = h[19] & 15
+    h = (struct.unpack(">I", h[o:o+4])[0] & 0x7fffffff) % 1000000
+    return str(h).zfill(SIZE_OF_OTP)
+
+
+def get_totp_token(secret):
+    return get_hotp_token(secret, intervals_no=int(time.time())//30)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='TOTP tool.')
+    parser.add_argument('secret', nargs=1, help='TOTP secret to generate the token for')
+    args = parser.parse_args()
+    try:
+        print(get_totp_token(args.secret[0].encode('utf8')))
+    except Exception as e:
+        print('ERROR:', e)
+        exit(1)
