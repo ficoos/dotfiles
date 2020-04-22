@@ -55,3 +55,10 @@ link_file config/fish .config/fish
 
 # kak
 link_file config/kak .config/kak
+
+# gdb
+link_file gdbinit.d .gdbinit.d
+link_file gdb-dashboard .gdb-dashboard
+link_file gdbinit .gdbinit
+link_file inputrc .inputrc
+link_file tgdbinit .tgdbinit
