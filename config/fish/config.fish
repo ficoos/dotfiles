@@ -1,6 +1,7 @@
 set -l fish_config_path "$HOME/.config/fish"
 
 # Additional PATH
+[ -z "$XDG_CONFIG_HOME" ] && set --export XDG_CONFIG_HOME $HOME/.config
 set --export PATH $PATH $HOME/.local/bin
 set --export PATH "$HOME/.cargo/bin" $PATH
 set --export PATH "$HOME/go/bin" $PATH
