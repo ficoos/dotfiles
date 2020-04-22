@@ -2,3 +2,4 @@
 .vscode/
 .lvimrc
 .editorconfig
+.gdb_history
