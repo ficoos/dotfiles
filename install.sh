@@ -15,6 +15,7 @@ install_package \
     pass \
     ranger \
     rsync \
+    tig \
     tmux \
     ${NULL}
 
