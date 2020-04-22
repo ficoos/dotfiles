@@ -5,6 +5,7 @@ set -l fish_config_path "$HOME/.config/fish"
 set --export PATH $PATH $HOME/.local/bin
 set --export PATH "$HOME/.cargo/bin" $PATH
 set --export PATH "$HOME/go/bin" $PATH
+set --export INPUTRC "XDG_CONFIG_HOME/inputrc"
 
 set --export TERMINAL "terminal"
 

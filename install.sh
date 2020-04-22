@@ -57,11 +57,13 @@ link_file config/fish .config/fish
 # kak
 link_file config/kak .config/kak
 
+# inputrc
+link_file config/inputrc .config/inputrc
+
 # gdb
 link_file gdbinit.d .gdbinit.d
 link_file gdb-dashboard .gdb-dashboard
 link_file gdbinit .gdbinit
-link_file inputrc .inputrc
 link_file tgdbinit .tgdbinit
 
 echo 'Success!'
