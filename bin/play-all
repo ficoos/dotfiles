@@ -9,16 +9,16 @@ function usage() {
 }
 
 PLAYER=vlc
-
+cmd="find -name '*' -type f -print0"
 for i in "$@"
 do
 case $i in
     -s|--suffle)
-    IS_SHUFFLE=1
+    cmd="$cmd | shuf -z"
     ;;
     *)
     usage
     ;;
 esac
 done
-find -name '*' -type f -print0 | ([ $IS_SHUFFLE -ne 0 ] && shuf -z || cat) | xargs -0 vlc
+eval $cmd | xargs -0 $PLAYER
