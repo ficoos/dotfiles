@@ -27,6 +27,11 @@ plug "ul/kak-lsp" do %{
         # flow doesn't support references (yet?)
         set-option window lsp_auto_highlight_references false
     }
+
+    define-command lsp-restart -docstring 'Restart ksk-lsp session' %{
+        lsp-stop
+        lsp-start
+    }
 }
 
 # Language Servers
