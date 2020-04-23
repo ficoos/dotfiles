@@ -46,10 +46,6 @@ function __scm_prompt
     end
 end
 
-function fish_prompt
-    echo -e "\033[32m["(date +%T)"]\033[0m "(whoami)"\033[38;5;8m@\033[38;5;7m"(hostname) "\033[36m"(pwd | string replace -r "^$HOME" '~')"\033[35m"(__scm_prompt)"\033[0m\n\$ "(tput sgr0)
-end
-
 function fish_greeting
     has_command fortune cowsay; and fortune | cowsay
 end
