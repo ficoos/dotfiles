@@ -3,7 +3,7 @@ $if Gdb
 "\e[21;2~": "server stepi\n" # S-F10
 "\e[23~": "server step\n" # F11
 "\e[23;2~": "server finish\n" # S-F11
-"\e[15~": "server continue\n" # F5
+"\e[15~": "server run-or-continue\n" # F5
 "\e[1;2A~": "server up\n" # S-UP
 "\e[1;2B~": "server down\n" # S-DOWN
 "\e[24~": "server dashboard\n" # F12
