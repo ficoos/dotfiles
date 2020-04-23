@@ -8,8 +8,12 @@ set -e
 # install_package <package-name>: install a package
 
 install_package \
+    cowsay \
+    fish \
+    fortune-mod \
     fzf \
     git-all \
+    htop \
     jq \
     kakoune \
     pass \
@@ -17,6 +21,7 @@ install_package \
     rsync \
     tig \
     tmux \
+    xsel \
     ${NULL}
 
 # configure pulseaudio
