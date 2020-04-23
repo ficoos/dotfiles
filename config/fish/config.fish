@@ -20,7 +20,7 @@ if [ -z "$EDITOR" ]
     set --export EDITOR kak --
 end
 
-bind ctrl+t to fzf-file-widget
+# bind ctrl+t to fzf-file-widget
 # bind ctrl+r to fzf-history-widget
 # bind alt+c fzf-cd-widget
 source $fish_config_path/fzf.fish
