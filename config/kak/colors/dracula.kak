@@ -1,89 +1,76 @@
-# dracula theme
-# https://draculatheme.com/
+# Dracula theme for Kakoune
+# A dark theme for Kakoune
+# https://draculatheme.com
+# https://kakoune.org
 
-evaluate-commands %sh{
-    black="rgb:282a36"
-    gray="rgb:44475a"
-    white="rgb:f8f8f2"
+# Color palette
+# https://github.com/dracula/dracula-theme#color-palette
+declare-option str black 'rgb:282a36'
+declare-option str gray 'rgb:44475a'
+declare-option str white 'rgb:f8f8f2'
+declare-option str blue 'rgb:6272a4'
+declare-option str cyan 'rgb:8be9fd'
+declare-option str green 'rgb:50fa7b'
+declare-option str orange 'rgb:ffb86c'
+declare-option str pink 'rgb:ff79c6'
+declare-option str purple 'rgb:bd93f9'
+declare-option str red 'rgb:ff5555'
+declare-option str yellow 'rgb:f1fa8c'
 
-    pink="rgb:ff79c6"
-    purple="rgb:bd93f9"
-    blue="rgb:6272a4"
-    cyan="rgb:8be9fd"
-    green="rgb:50fa7b"
-    yellow="rgb:f1fa8c"
-    orange="rgb:ffb86c"
-    red="rgb:ff5555"
+declare-option str background %opt{black}
+declare-option str dimmed_background %opt{gray}
+declare-option str foreground %opt{white}
 
-    echo "
-         face global value $green
-         face global type $purple
-         face global variable $red
-         face global function $red
-         face global module $red
-         face global string $yellow
-         face global error $red
-         face global keyword $cyan
-         face global operator $orange
-         face global attribute $pink
-         face global comment $blue+i
-         face global meta $red
-         face global builtin $white+b
+# Reference
+# https://github.com/mawww/kakoune/blob/master/colors/default.kak
+# For code
+set-face global value "%opt{green}"
+set-face global type "%opt{purple}"
+set-face global variable "%opt{red}"
+set-face global module "%opt{red}"
+set-face global function "%opt{red}"
+set-face global string "%opt{yellow}"
+set-face global keyword "%opt{cyan}"
+set-face global operator "%opt{orange}"
+set-face global attribute "%opt{pink}"
+set-face global comment "%opt{blue}+i"
+set-face global meta "%opt{red}"
+set-face global builtin "%opt{white}+b"
 
-         face global title $red
-         face global header $orange
-         face global bold $pink
-         face global italic $purple
-         face global mono $green
-         face global block $cyan
-         face global link $green
-         face global bullet $green
-         face global list $white
+# For markup
+set-face global title "%opt{red}"
+set-face global header "%opt{orange}"
+set-face global bold "%opt{pink}"
+set-face global italic "%opt{purple}"
+set-face global mono "%opt{green}"
+set-face global block "%opt{cyan}"
+set-face global link "%opt{green}"
+set-face global bullet "%opt{green}"
+set-face global list "%opt{white}"
 
-         face global Default $white,$black
-
-         face global PrimarySelection $black,$pink
-         face global PrimaryCursor $black,$cyan
-         face global PrimaryCursorEol $black,$cyan
-
-         face global SecondarySelection $black,$purple
-         face global SecondaryCursor $black,$orange
-         face global SecondaryCursorEol $black,$orange
-
-         face global MatchingChar $black,$blue
-         face global Search $blue,$green
-         face global CurrentWord $white,$blue
-
-         # listchars
-         face global Whitespace $gray,$black+f
-         # ~ lines at EOB
-         face global BufferPadding $gray,$black
-
-         face global LineNumbers $gray,$black
-         # must use -hl-cursor
-         face global LineNumberCursor $white,$gray+b
-         face global LineNumbersWrapped $gray,$black+i
-
-         # when item focused in menu
-         face global MenuForeground $blue,$white+b
-         # default bottom menu and autocomplete
-         face global MenuBackground $white,$blue
-         # complement in autocomplete like path
-         face global MenuInfo $cyan,$blue
-         # clippy
-         face global Information $yellow,$gray
-         face global Error $black,$red
-
-         # all status line: what we type, but also client@[session]
-         face global StatusLine $white,$black
-         # insert mode, prompt mode
-         face global StatusLineMode $black,$green
-         # message like '1 sel'
-         face global StatusLineInfo $purple,$black
-         # count
-         face global StatusLineValue $orange,$black
-         face global StatusCursor $white,$blue
-         # like the word 'select:' when pressing 's'
-         face global Prompt $black,$green
-    "
-}
+# Builtin faces
+set-face global Default "%opt{white},%opt{black}"
+set-face global PrimarySelection "%opt{black},%opt{pink}"
+set-face global SecondarySelection "%opt{black},%opt{purple}"
+set-face global PrimaryCursor "%opt{black},%opt{cyan}"
+set-face global SecondaryCursor "%opt{black},%opt{orange}"
+set-face global PrimaryCursorEol "%opt{black},%opt{cyan}"
+set-face global SecondaryCursorEol "%opt{black},%opt{orange}"
+set-face global LineNumbers "%opt{gray},%opt{black}"
+set-face global LineNumberCursor "%opt{white},%opt{gray}+b"
+set-face global LineNumbersWrapped "%opt{gray},%opt{black}+i"
+set-face global MenuForeground "%opt{blue},%opt{white}+b"
+set-face global MenuBackground "%opt{white},%opt{blue}"
+set-face global MenuInfo "%opt{cyan},%opt{blue}"
+set-face global Information "%opt{yellow},%opt{gray}"
+set-face global Error "%opt{black},%opt{red}"
+set-face global StatusLine "%opt{white},%opt{black}"
+set-face global StatusLineMode "%opt{black},%opt{green}"
+set-face global StatusLineInfo "%opt{purple},%opt{black}"
+set-face global StatusLineValue "%opt{orange},%opt{black}"
+set-face global StatusCursor "%opt{white},%opt{blue}"
+set-face global Prompt "%opt{black},%opt{green}"
+set-face global MatchingChar "%opt{black},%opt{blue}"
+set-face global Whitespace "%opt{gray},%opt{black}+f"
+set-face global WrapMarker Whitespace
+set-face global BufferPadding "%opt{gray},%opt{black}"
