@@ -18,8 +18,8 @@ evaluate-commands %sh{
     echo "
          face global value $green
          face global type $purple
-         face global variable $red
-         face global function $red
+         face global variable $white
+         face global function $cyan
          face global module $red
          face global string $yellow
          face global error $red
