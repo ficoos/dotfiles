@@ -1,6 +1,7 @@
 python
 import subprocess as sp
 import os
+import shlex
 
 NULLPROG = "sh -c 'while [ 1 == 1 ]; do sleep 100; done'"
 
@@ -11,14 +12,42 @@ def set_title(tty, title):
     with open(tty, 'ab') as t:
         t.write(b'\x1b]2;' + title.encode('utf8') + b'\x1b\\')
 
+class DashboardPane (gdb.Command):
+    """Route dashboard output to pane"""
+
+    def _usage(self):
+        print("dashboard-pane: [module] <pane>")
+
+    def __init__(self):
+        super(DashboardPane, self).__init__("dashboard-pane", gdb.COMMAND_USER)
+
+    def invoke(self, args, from_tty):
+        args = shlex.split(args)
+        module = ""
+        if len(args) == 1:
+            pane = args[0]
+        elif len(args) == 2:
+            module = args[0]
+            pane = args[1]
+        else:
+            self._usage()
+            return
+
+        pty = tmux(
+            'display-message', '-t', pane, '-p', '-F', '#{pane_tty}',
+        ).strip()
+        set_title(pty, 'dashboard')
+        sp.check_call(['stty', '--file', pty, '-echo'])
+        gdb.execute(f'dashboard {module} -output {pty}')
+
+DashboardPane()
+
 tmux('setw', 'remain-on-exit', 'on')
 gdb_pane, gdb_tty = tmux('display-message', '-p' , '-F', '#{pane_id},#{pane_tty}').strip().split(',')
 set_title(gdb_tty, 'gdb')
 
 dashboard_pane, dashboard_tty = tmux('split-window', '-d', '-h', '-P', '-F', '#{pane_id},#{pane_tty}', NULLPROG).strip().split(',')
-sp.check_call(['stty', '--file', dashboard_tty, '-echo'])
-set_title(dashboard_tty, 'dashboard')
-gdb.execute(f'dashboard -output {dashboard_tty}')
+gdb.execute(f'dashboard-pane {dashboard_pane}')
 
 app_pane, app_tty = tmux('split-window', '-d', '-v', '-P', '-F', '#{pane_id},#{pane_tty}', NULLPROG).strip().split(',')
 set_title(app_tty, 'inferior')
@@ -29,6 +58,8 @@ end
 dashboard -layout source assembly registers stack
 dashboard -enabled on
 dashboard -style syntax_highlighting 'monokai'
+
+alias dbp = dashboard-pane
 
 # make sure dashboard output is updated when gdb state changes
 define hookpost-up
