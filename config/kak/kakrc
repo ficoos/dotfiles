@@ -151,6 +151,7 @@ map global user '\' ': execute-keys \<ret>' -docstring 'no-hooks prefix'
 map global user p ': enter-user-mode<space>paste<ret>' -docstring 'paste clipboard'
 map global user y ': enter-user-mode<space>yank<ret>' -docstring 'yank clipboard'
 map global user g ': terminal tig<ret>' -docstring 'yank clipboard'
+map global user w ': write<ret>' -docstring 'write current buffer'
 
 # advanced paste
 declare-user-mode paste
@@ -183,17 +184,16 @@ evaluate-commands %sh{
     fi
 }
 
-# TODO: define `write-all-quit-all`
-define-command quit-all \
-    -docstring %{quit-all: quits all clients} \
-%{ evaluate-commands %sh{
-    eval "set -- $kak_client_list"
-    while [ -n "$1" ]; do
-        printf '%s\n' "evaluate-commands -try-client $1 %{quit}"
-        shift
-    done
-}}
-alias global qa quit-all
+define-command write-quit-all \
+    -docstring %{write-quit-all: writes all buffers and quits all clients} \
+%{
+    write-all
+    kill
+}
+
+alias global wqa write-quit-all
+alias global qa kill
+alias global qa! kill!
 
 define-command better-buffer-previous \
 	-docstring %{better-buffer-next : go to next buffer, but better!
