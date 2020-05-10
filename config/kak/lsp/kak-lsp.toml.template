@@ -17,10 +17,25 @@ variable_other_enummember = "variable"
 variable_other_field = "variable"
 variable = "variable"
 
+[semantic_tokens]
+type = "type"
+variable = "variable"
+namespace = "module"
+function = "function"
+string = "string"
+keyword = "keyword"
+operator = "operator"
+comment = "comment"
+
+[semantic_modifiers]
+documentation = "documentation"
+readonly = "default+d"
+
 [language.c_cpp]
 filetypes = ["c", "cpp"]
 roots = ["compile_commands.json", ".ccls", ".git"]
 command = "clangd"
+formatTool = "clang-format"
 
 [language.python]
 filetypes = ["python"]

@@ -19,10 +19,21 @@ plug "ul/kak-lsp" do %{
         # TODO: analyze server capabilities to choose what to turn on or off
         set-option window lsp_auto_highlight_references true
         set-option window lsp_hover_anchor true
+        lsp-auto-signature-help-enable
         lsp-auto-hover-insert-mode-disable
         lsp-auto-hover-enable
         lsp-enable-window
     }
+
+    #hook global WinSetOption filetype=(c|cpp) %{
+    #    hook window -group semantic-tokens BufReload .* lsp-semantic-tokens
+    #    hook window -group semantic-tokens NormalIdle .* lsp-semantic-tokens
+    #    hook window -group semantic-tokens InsertIdle .* lsp-semantic-tokens
+    #    hook -once -always window WinSetOption filetype=.* %{
+    #        remove-hooks window semantic-tokens
+    #    }
+    #}
+
     hook global WinSetOption filetype=(javascript) %{
         # flow doesn't support references (yet?)
         set-option window lsp_auto_highlight_references false
