@@ -1,58 +1,56 @@
 #!/bin/bash
-echo "Converting CBRs to CBZs"
+istty=$(tty &>/dev/null &&  echo "true")
 
-# Set the "field separator" to something other than spaces/newlines" so that spaces
-# in the file names don't mess things up. I'm using the pipe symbol ("|") as it is very
-# unlikely to appear in a file name.
-IFS="|"
+function convert() {
+    cbr_file=$(readlink -f "$1")
+    echo $cbr_file
+    newname=$(echo "$cbr_file" | sed -e "s:\(.*\)\.[^.]\+\$:\1.cbz:g")
 
-# Set name for the temp dir. This directory will be created under WORDDIR
-TEMPDIR="/tmp/cbr2cbz_$$"
+    if [ "$newname" == "$cbr_file" ]
+    then
+        printf "Not a .cbr file\n" >&2
+        return 1
+    fi
 
-echo "Working from directory $SOURCEDIR"
+    if [ -e "$newname" ]
+    then
+        printf "File with name '$newname' already exists\n" >&2
+        return 1
+    fi
 
-# We need an empty directory to work in, so we'll create a temp directory here
-mkdir $TEMPDIR
-# and step into it
-cd $TEMPDIR
+    file -E "$cbr_file" && \
+    tmp_dir=$(mktemp -d cbr2cbz-XXXXX -p "") && \
+    cd "$tmp_dir" && \
+    atool -x "$cbr_file" && \
+    chmod u+rw -R . && \
+    zip --recurse-paths "new.zip" -- * && \
+    mv "new.zip" "$newname" && \
+    rm "$cbr_file"
+    status=$?
+    cd /tmp
+    rm -rf "$tmp_dir"
+    return $status
+}
+
+function convert_ui() {
+    (
+        error=$(convert "$1" 2>&1)
+        if [ $? -ne 0 ]
+        then
+            zenity --width=400 --error --text "$error" &>/dev/null </dev/null &
+        else
+            zenity --info --text "Success!" &>/dev/null </dev/null &
+        fi
+    ) | zenity --no-cancel --title "Convert to .cbz" --text "Converting $1..." --progress --pulsate --auto-close
+}
 
 while [ -n "$1" ]; do
-	CBRFILE=$(readlink -f $1)
-	echo "Converting $CBRFILE"
-
-	# Now for the actual work. First, extract the base file name (without the extension)
-	# using the "basename" command. Warning: more backtics.
-	BASENAME=`basename $CBRFILE ".cbr"`
-
-	# And the directory path for that file, so we know where to put the finished ".cbz"
-	# file.
-	DIRNAME=`dirname $CBRFILE`
-
-	# Now, build the "new" file name,
-	NEWNAME="$BASENAME.cbz"
-
-	# We use RAR file's name to create folder for unpacked files
-	mkdir "$BASENAME"
-	# and unpack the rar file into it
-	unrar x "$CBRFILE" "$BASENAME" && \
-	cd "$BASENAME" && \
-	 # Lets ensure the permissions allow us to pack everything
-	chmod u+rw -R ./* && \
-	# Put all the extracted files into new ".cbz" file
-	zip --recurse-paths "$NEWNAME" -- * && \
-	# And move it to the directory where we found the original ".cbr" file
-	mv "$NEWNAME" $DIRNAME/"$NEWNAME"
-	# Finally, "cd" back to the original working directory, and delete the temp directory
-	# created earlier.
-	cd .. && \
-	rm -r "$BASENAME" && \
-	# Delete the RAR file also
-	rm "$CBRFILE"
-	shift 1
+    if [ -z "$istty" ]
+    then
+        (convert_ui "$1")
+    else
+        (convert "$1")
+    fi
+    shift 1
 done
-
-# At the end we cleanup by removing the temp folder from ram disk
-cd ..
-echo "Conversion Done"
-rm -r "$TEMPDIR"
 
