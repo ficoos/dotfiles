@@ -1,0 +1,242 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import sys
+
+import gi
+gi.require_version('Gdk', '3.0')
+gi.require_version('Gtk', '3.0')
+gi.require_version('Vte', '2.91')
+
+from gi.repository import Gdk
+from gi.repository import Gio
+from gi.repository import Gtk, Vte
+from gi.repository import GLib
+from gi.repository import Pango
+
+STDIO_PROC_NAME = '@stdio@'
+LOCATIONS = [
+    (0, 1), (0.5, 1), (1, 1),
+    (0, 0.5), (0.5, 0.5), (1, 0.5),
+    (0, 0), (0.5, 0), (1, 0),
+]
+
+CURSOR_BLINK_MODE = {
+    'system': Vte.CursorBlinkMode.SYSTEM,
+    'on': Vte.CursorBlinkMode.ON,
+    'off': Vte.CursorBlinkMode.OFF,
+}
+
+class _Terminal:
+    def __init__(self, args):
+        self.status = None
+        self._cmd = args.command
+        self._wnd = Gtk.Window()
+        self._terminal = Vte.Terminal()
+        self._wnd.connect('delete-event', Gtk.main_quit)
+        self._terminal.connect('child-exited', self._on_child_exited)
+        self._terminal.spawn_async(
+            Vte.PtyFlags.DEFAULT,
+            None,
+            self._cmd,
+            None,
+            GLib.SpawnFlags.SEARCH_PATH,
+            None,
+            None,
+            -1,
+            None,
+            self._on_spawn_callback,
+        )
+        self._apply_profile(args.profile)
+
+        screen = self._wnd.get_screen()
+        display = screen.get_display()
+        monitor = display.get_monitor_at_point(*self._wnd.get_position())
+        monitor_rect = monitor.get_geometry()
+
+        if args.pop:
+            self._did_focus = False
+            self._wnd.set_skip_pager_hint(True)
+            self._wnd.set_skip_taskbar_hint(True)
+            self._wnd.set_modal(True)
+            self._wnd.set_decorated(False)
+            self._wnd.connect('focus-out-event', self._on_focus_lost)
+
+        if args.size is not None:
+            size = tuple(map(float, args.size.split(',')))
+            width = monitor_rect.width * size[0]
+            height = monitor_rect.height * size[1]
+            self._wnd.resize(width, height)
+
+        if args.location:
+            location = LOCATIONS[args.location - 1]
+            width, height = self._wnd.get_size()
+            self._wnd.move(
+                (monitor_rect.width - width) * location[0],
+                (monitor_rect.height - height) * location[1],
+            )
+
+    def _on_title_changed(self, term):
+        self._wnd.set_title(term.get_window_title())
+
+    def _get_profile(self, profile_name):
+        profile_list = Gio.Settings.new("org.gnome.Terminal.ProfilesList")
+        profile_id = profile_list.get_string(args.profile)
+        return Gio.Settings.new_with_path(
+            "org.gnome.Terminal.Legacy.Profile",
+            f"/org/gnome/terminal/legacy/profiles:/:{profile_id}/",
+        )
+    def _on_spawn_callback(self, terminal, pid, error):
+        if error:
+            import subprocess as sp
+            sp.call(['zenity', '--info', '--text', str(error)])
+            print(error)
+            self.status = os.WEXITSTATUS(-1)
+            Gtk.main_quit()
+
+    def _apply_profile(self, profile_name):
+        profile = self._get_profile(profile_name)
+        font = Pango.FontDescription.from_string(profile.get_string("font"))
+        foreground_color = Gdk.RGBA()
+        foreground_color.parse(profile.get_string("foreground-color"))
+        background_color = Gdk.RGBA()
+        background_color.parse(profile.get_string("background-color"))
+        highlight_foreground_color = Gdk.RGBA()
+        highlight_foreground_color.parse(
+            profile.get_string("highlight-foreground-color"),
+        )
+        palette = []
+        for s in profile.get_strv("palette"):
+            c = Gdk.RGBA()
+            c.parse(s)
+            palette.append(c)
+
+        if not profile.get_boolean('use-system-font'):
+            self._terminal.set_font(font)
+        if profile.get_boolean('show-foreground-process-in-title'):
+            self._terminal.connect(
+                'window-title-changed',
+                self._on_title_changed,
+            )
+        # TODO: implement exit-action
+        # TODO: implement title-mode
+        # TODO: implement custom-command
+
+        self._terminal.set_color_highlight_foreground(
+            highlight_foreground_color,
+        )
+        self._terminal.set_colors(foreground_color, background_color, palette)
+        self._terminal.set_enable_bidi(profile.get_boolean("enable-bidi"))
+        self._terminal.set_bold_is_bright(profile.get_boolean("bold-is-bright"))
+        self._wnd.set_title(profile.get_string("title"))
+        self._terminal.set_audible_bell(profile.get_boolean('audible-bell'))
+        self._terminal.set_cursor_blink_mode(
+            CURSOR_BLINK_MODE.get(
+                profile.get_string('cursor-blink-mode'),
+                Vte.CursorBlinkMode.SYSTEM,
+            ),
+        )
+        self._terminal.set_scroll_on_output(
+            profile.get_boolean('scroll-on-output'),
+        )
+        # TODO: the rest of the settings
+
+    def show(self):
+        # for some reason unknown to me
+        # doing `show_all -> add -> show_all`
+        # makes the window appear much faster than `add -> show_all`
+        self._wnd.show_all()
+        self._wnd.add(self._terminal)
+        self._wnd.show_all()
+        self._terminal.grab_focus()
+
+
+    def _on_focus_lost(self, dlg, b):
+        if not self._did_focus:
+            # We focus out once one the window is created, ignore that
+            self._did_focus = True
+            return
+
+        # this causes the pty to be destroyed
+        self._terminal.destroy()
+
+    def _on_child_exited(self, vte, status):
+        self.status = os.WEXITSTATUS(status)
+        Gtk.main_quit()
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == STDIO_PROC_NAME:
+        pop_pid = sys.argv[2]
+        fd = os.open(f"/proc/{pop_pid}/fd/0", os.O_RDONLY)
+        os.dup2(fd, 0)
+        os.close(fd)
+        fd = os.open(f"/proc/{pop_pid}/fd/1", os.O_WRONLY)
+        os.dup2(fd, 1)
+        os.close(fd)
+        os.execvp(sys.argv[3], sys.argv[3:])
+        os.exit(-1)
+
+    parser = argparse.ArgumentParser(description='Tiny gnome terminal.')
+    parser.add_argument(
+        '--pop',
+        default=False,
+        action='store_true',
+        help="should this be a pop-up terminal or a regular terminal"
+    )
+    parser.add_argument(
+        '--location',
+        type=int,
+        default=None,
+        help=("location on screen. must be a number corrosponding to the numpad "
+              "(e.g. 2: top-center, 6: middle-right)")
+       )
+    parser.add_argument(
+        '--size',
+        type=str,
+        default=None,
+        help="width,height as fraction of the screen size (e.g. 0.5,0.5)",
+    )
+    parser.add_argument(
+        '--stdio',
+        action='store_true',
+        default=False,
+        help=("pass the current stdio to the child process. "
+              "useful for tools like fzf"),
+    )
+    parser.add_argument(
+        '--profile',
+        type=str,
+        default="default",
+        help="the gnome-terminal profile to use for this terminal settings",
+    )
+    parser.add_argument('command', metavar='COMMAND', type=str, nargs='*',
+                        default=[os.environ.get("SHELL", "sh")],
+                        help='the command to run')
+    args = parser.parse_args()
+    if (args.stdio):
+        # FIXME: There is some bug with the flag GLib.SpawnFlags.FILE_AND_ARGV_ZERO
+        #        where it uses file as argv[0] and just skips argv[0].
+        #        The real solution is to start ourselves with
+        #        argv[0] == STDIO_PROC_NAME, that way we can _almost_ be sure
+        #        this didn't happen by mistake
+        args.command = [sys.argv[0], STDIO_PROC_NAME, str(os.getpid())] + args.command
+    else:
+        args.command = args.command
+
+    if args.pop:
+        if args.size is None:
+            args.size = "0.3,0.3"
+        if args.location is None:
+            args.location = 5
+
+    if args.location is not None and (args.location < 1 or args.location > 9):
+        parser.print_help()
+        exit(-1)
+
+    import time
+    term = _Terminal(args)
+    term.show()
+    Gtk.main()
+    status = term.status
+    exit(status)

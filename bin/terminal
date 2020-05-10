@@ -1,2 +1,11 @@
 #!/bin/sh
-exec gnome-terminal -- "$@"
+if [ "$1" == "-e" ];
+then
+    shift 1
+fi
+if [ "$1" == "--" ];
+then
+    shift 1
+fi
+exec tgt -- "$@"
+#exec gnome-terminal -- "$@"
