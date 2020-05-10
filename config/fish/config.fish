@@ -17,7 +17,7 @@ set --export ANSIBLE_NOCOWS 1
 
 # preferences
 if [ -z "$EDITOR" ]
-    set --export EDITOR kak --
+    set --export EDITOR kak
 end
 
 # bind ctrl+t to fzf-file-widget
