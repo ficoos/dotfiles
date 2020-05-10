@@ -64,15 +64,15 @@ define-command define-lua-command \
 
     cat > $tmp <<<"$1"
     # extracting kakoune variables from command body
-    vars=$(grep -o 'kak_\w*' <<<"$1" | uniq | sed "s/^/# /")
-    luac -o "$tmp.c" "$tmp"
-    mv "$tmp.c" "$tmp"
+    vars=$(grep -o 'kak_\w*' <"$tmp" | uniq | sed "s/^/# /")
+    luac -o "$tmp.c" "$tmp" &&
+    mv "$tmp.c" "$tmp" || exit 1
     # creating body of the command
     printf "%s\n" "
         define-command $switches $docstring $command_name $completion $candidates $params %{
             evaluate-commands %sh{
                 $vars
-                lua -e '_G = setmetatable(_G, { __index=function(tbl, key) return rawget(tbl, key) or (string.sub(key, 1, 4) == \"kak_\" and os.getenv(key)) or nil end})' $tmp \$@
+                lua -e 'package.path = package.path .. \";$kak_config/?.lua\"; _G = setmetatable(_G, { __index=function(tbl, key) return rawget(tbl, key) or (string.sub(key, 1, 4) == \"kak_\" and os.getenv(key)) or nil end})' $tmp \$@
             }
         }
         hook global -always KakEnd .* %{ nop %sh{ rm $tmp }}

@@ -49,9 +49,26 @@ The program passed as argument will be executed in the new terminal' \
     tmux-terminal-impl 'split-window -f -v -b -l 20' %arg{@}
 }
 
+define-command -params 1 kill-pane-on-exit %{
+    evaluate-commands %sh{
+        printf "hook -once -always global KakEnd .* %%{
+            nop %%sh{ tmux kill-pane -t %s }
+        }\n" "$1"
+    }
+}
 
 define-command ranger -docstring 'Open the ranger file browser' %{
-    connect-command tmux-terminal-left-dock ranger "--cmd=source %val{config}/rangerrc"
+    evaluate-commands %sh{
+        pane_id=$(
+            tmux split-window -b -l 40 -h -P -F '#{pane_id}' \
+                env EDITOR="kak -ui dummy -c $kak_session -e ranger-open" \
+                ranger "--cmd=source $kak_config/rangerrc"
+        )
+        if [ -n "$pane_id" ]
+        then
+            printf "kill-pane-on-exit %%{%s}\n" "$pane_id"
+        fi
+    }
 }
 
 evaluate-commands %sh{
@@ -423,6 +440,19 @@ define-command evaluate-selection \
     }
 }
 
-define-lua-command test-lua %{
-    print("echo -debug %{hello world}", kak_buflist)
+define-lua-command -hidden ranger-open %{
+    require("common")
+
+    local client = nil
+    table.remove(kak_client_list, array.find_item(kak_client_list, kak_client))
+    if array.find_item(kak_client_list, "main") then
+        client = "main"
+    else
+        client = kak_client_list[1]
+    end
+    if (client) then
+        emit_cmd("evaluate-commands", "-try-client", client, "buffer", kak_bufname)
+        emit_cmd("focus", client)
+        emit_cmd("quit")
+    end
 }
