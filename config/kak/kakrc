@@ -46,7 +46,7 @@ tmux-terminal-left-pane <program> [<arguments>]: create a new terminal as a tmux
 The pane is opened on the left of the window
 The program passed as argument will be executed in the new terminal' \
 %{
-    tmux-terminal-impl 'split-window -f -v -b -l 20' %arg{@}
+    tmux-terminal-impl 'split-window -f -v -l 20' %arg{@}
 }
 
 define-command -params 1 kill-pane-on-exit %{
@@ -60,7 +60,7 @@ define-command -params 1 kill-pane-on-exit %{
 define-command ranger -docstring 'Open the ranger file browser' %{
     evaluate-commands %sh{
         pane_id=$(
-            tmux split-window -b -l 40 -h -P -F '#{pane_id}' \
+            tmux split-window -b -f -l 40 -h -P -F '#{pane_id}' \
                 env EDITOR="kak -ui dummy -c $kak_session -e ranger-open" \
                 ranger "--cmd=source $kak_config/rangerrc"
         )
@@ -73,7 +73,7 @@ define-command ranger -docstring 'Open the ranger file browser' %{
 
 evaluate-commands %sh{
     if which ranger &> /dev/null; then
-        echo "map global user f ': ranger<ret>' -docstring 'open file browser'"
+        echo "map global user o ': ranger<ret>' -docstring 'open file browser'"
     fi
 }
 
