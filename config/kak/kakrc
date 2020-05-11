@@ -167,7 +167,7 @@ map global user C ': comment-line<ret>' -docstring '[un]comment block'
 map global user '\' ': execute-keys \<ret>' -docstring 'no-hooks prefix'
 map global user p ': enter-user-mode<space>paste<ret>' -docstring 'paste clipboard'
 map global user y ': enter-user-mode<space>yank<ret>' -docstring 'yank clipboard'
-map global user g ': terminal tig<ret>' -docstring 'yank clipboard'
+map global user g ': terminal tig<ret>' -docstring 'open tig'
 map global user w ': write<ret>' -docstring 'write current buffer'
 
 # advanced paste
