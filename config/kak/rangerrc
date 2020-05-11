@@ -1,3 +1,10 @@
 default_linemode filename
+set display_size_in_main_column false
 set vcs_aware true
+set hostname_in_titlebar false
+set show_selection_in_titlebar false
+set tilde_in_titlebar true
+set display_free_space_in_status_bar false
+set update_tmux_title true
+
 map <esc> q
