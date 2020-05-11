@@ -169,6 +169,7 @@ map global user p ': enter-user-mode<space>paste<ret>' -docstring 'paste clipboa
 map global user y ': enter-user-mode<space>yank<ret>' -docstring 'yank clipboard'
 map global user g ': terminal tig<ret>' -docstring 'open tig'
 map global user w ': write<ret>' -docstring 'write current buffer'
+map global user f ': format<ret>' -docstring 'format current buffer'
 
 # advanced paste
 declare-user-mode paste
