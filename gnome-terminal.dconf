@@ -9,8 +9,9 @@ full-screen='<Shift><Alt>f'
 
 [legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
 allow-bold=true
+audible-bell=false
 background-color='#000000000000'
-background-transparency-percent=12
+background-transparency-percent=8
 bold-color='#000000000000'
 bold-color-same-as-fg=true
 bold-is-bright=true
