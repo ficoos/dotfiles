@@ -15,7 +15,7 @@ plug "ul/kak-lsp" do %{
     set-face global DiagnosticWarning default,rgb:333300
     set-face global Reference         default,default+u
 
-    hook global WinSetOption filetype=(c|cpp|typescript|javascript|python|go) %{
+    hook global WinSetOption filetype=(c|cpp|typescript|javascript|python|go|rust) %{
         # TODO: analyze server capabilities to choose what to turn on or off
         set-option window lsp_auto_highlight_references true
         set-option window lsp_hover_anchor true
@@ -25,14 +25,14 @@ plug "ul/kak-lsp" do %{
         lsp-enable-window
     }
 
-    #hook global WinSetOption filetype=(c|cpp) %{
-    #    hook window -group semantic-tokens BufReload .* lsp-semantic-tokens
-    #    hook window -group semantic-tokens NormalIdle .* lsp-semantic-tokens
-    #    hook window -group semantic-tokens InsertIdle .* lsp-semantic-tokens
-    #    hook -once -always window WinSetOption filetype=.* %{
-    #        remove-hooks window semantic-tokens
-    #    }
-    #}
+    hook global WinSetOption filetype=(typescript) %{
+        hook window -group semantic-tokens BufReload .* lsp-semantic-tokens
+        hook window -group semantic-tokens NormalIdle .* lsp-semantic-tokens
+        hook window -group semantic-tokens InsertIdle .* lsp-semantic-tokens
+        hook -once -always window WinSetOption filetype=.* %{
+            remove-hooks window semantic-tokens
+        }
+    }
 
     hook global WinSetOption filetype=(javascript) %{
         # flow doesn't support references (yet?)
