@@ -16,5 +16,3 @@ fi
 pane_id=$(tmux display-message -p -F '#{pane_id}')
 fzf_pane=$(tmux new-window -d -P -n "*scratch*" sh -c "$0 select $pane_id" -F '#{pane_id}')
 tmux swap-pane -t $fzf_pane
-#pane=$(tmux list-panes -s -F '[#{pane_id}] #{pane_title}' | fzf | grep -o -P '(?<=^\[)%\d+(?=\])') && \
-#tmux swap-pane -t $pane || tmux swap_pant $fzf_pane
