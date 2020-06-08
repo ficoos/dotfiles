@@ -18,6 +18,10 @@ function install_package() {
         xargs -r sudo dnf install -y
 }
 
+function enable_copr() {
+    dnf copr list | grep "/$1\$" &> /dev/null || sudo dnf copr -y enable "$1"
+}
+
 function dconf_load() {
     dconf load "$1" < "$2"
 }

@@ -6,6 +6,11 @@ set -e
 # link_file <target> <link-name>: creates a symlink. target is relative to this
 #                                 repo. link-name is relative to $HOME
 # install_package <package-name>: install a package
+# enable_copr <repo-name>       : enable a copr repository
+
+enable_copr smizrahi/tgt
+enable_copr gnumdk/lollypop
+enable_copr jkonecny/kakoune
 
 install_package \
     cowsay \
@@ -19,6 +24,7 @@ install_package \
     pass \
     ranger \
     rsync \
+    tgt \
     tig \
     tmux \
     xsel \
