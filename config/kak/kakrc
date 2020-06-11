@@ -62,7 +62,7 @@ define-command ranger -docstring 'Open the ranger file browser' %{
         pane_id=$(
             tmux split-window -b -f -l 40 -h -P -F '#{pane_id}' \
                 env EDITOR="kak -ui dummy -c $kak_session -e ranger-open" \
-                ranger "--cmd=source $kak_config/rangerrc"
+                ranger "--cmd=source $kak_config/rangerrc" "$PWD"
         )
         if [ -n "$pane_id" ]
         then
