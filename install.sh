@@ -50,7 +50,7 @@ then
 fi
 
 # gnome-terminal
-dconf_load /org/gnome/terminal/ gnome-terminal.dconf
+dconf_load dconf
 
 # tmux
 link_file tmux.conf .tmux.conf

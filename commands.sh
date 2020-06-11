@@ -23,7 +23,32 @@ function enable_copr() {
 }
 
 function dconf_load() {
-    dconf load "$1" < "$2"
+    for f in $1/*
+    do
+        p=${f##$1/}
+        p=${p%%.dconf}
+        p=${p//_/\/}
+        # we ask the user to validate the change because dconf entries are not
+        # linked we might accidentally override a change we want to persist
+        dconf dump "$p" | diff --color=auto - "$f" && continue
+        while true
+        do
+            read -r -p "Would you like to override dconf:/$p (Y/n)? " ans
+            case "$ans" in
+                ""|y)
+                    dconf load "$p" < "$f"
+                    break
+                ;;
+                n)
+                    echo "Skipping update of dconf:/$p"
+                    break
+                ;;
+                *)
+                    echo "Invalid answer"
+                ;;
+            esac
+        done
+    done
 }
 
 function download_file() {
@@ -31,3 +56,4 @@ function download_file() {
     local_path="$2"
     curl -L "$1" -o "$local_path"
 }
+

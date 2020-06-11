@@ -1,0 +1,30 @@
+[/]
+calculator=['<Super>c']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/']
+home=['<Shift><Super>asciitilde']
+magnifier=@as []
+magnifier-zoom-in=@as []
+magnifier-zoom-out=@as []
+max-screencast-length=uint32 1800
+play=['<Super>KP_Enter']
+rotate-video-lock-static=@as []
+screenreader=@as []
+switch-input-source='<Super>space'
+switch-input-source-backward='<Shift><Super>space'
+volume-down=['<Super>KP_Subtract']
+volume-up=['<Super>KP_Add']
+
+[custom-keybindings/custom0]
+binding='<Primary><Super>p'
+command='pass gui'
+name='pass-gui'
+
+[custom-keybindings/custom1]
+binding='<Super>r'
+command='drun'
+name='drun'
+
+[custom-keybindings/custom2]
+binding='<Super>Return'
+command='gnome-terminal'
+name='gnome-terminal'
