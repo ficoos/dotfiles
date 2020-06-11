@@ -15,6 +15,9 @@ set --export PASSWORD_STORE_ENABLE_EXTENSIONS true
 # ansible
 set --export ANSIBLE_NOCOWS 1
 
+# force x11 backend for ssh sessions
+[ -n "$SSH_CONNECTION" ]; and set --export GDK_BACKEND x11
+
 # preferences
 if [ -z "$EDITOR" ]
     set --export EDITOR kak
