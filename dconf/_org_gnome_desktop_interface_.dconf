@@ -4,6 +4,7 @@ clock-show-weekday=false
 cursor-theme='Adwaita'
 enable-animations=true
 enable-hot-corners=false
+show-battery-percentage=true
 gtk-im-module='gtk-im-context-simple'
 gtk-theme='Adwaita'
 monospace-font-name='FiraCode Nerd Font 10'
