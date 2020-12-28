@@ -22,3 +22,5 @@
 	default = simple
 [sendemail]
 	smtpserver = smtp.redhat.com
+[pull]
+	ff = only
