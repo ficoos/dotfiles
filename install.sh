@@ -28,6 +28,7 @@ install_package \
     tig \
     tmux \
     xsel \
+    starship \
     ${NULL}
 
 # configure pulseaudio
@@ -70,6 +71,9 @@ link_file config/kak .config/kak
 
 # inputrc
 link_file config/inputrc .config/inputrc
+
+# starship
+link_file config/starship.toml .config/starship.toml
 
 # gdb
 link_file gdbinit.d .gdbinit.d
