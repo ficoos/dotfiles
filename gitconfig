@@ -1,6 +1,8 @@
 [core]
 	editor = nvim
 	excludesfile = ~/.gitignore
+[mergetool "vscode"]
+    cmd = code --wait $MERGED
 [alias]
 	co = checkout
 	br = branch
