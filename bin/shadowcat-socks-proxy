@@ -5,4 +5,6 @@ systemd-run \
 	--service-type=simple \
 	--no-ask-password \
 	--unit=shaowcat-socks-proxy \
-	ssh -T -D 2001 -N smizrahi@shadowcat
+	ssh -T -D 2001 -N smizrahi@shadowcat \
+|| systemctl --user restart shaowcat-socks-proxy.service
+
