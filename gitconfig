@@ -1,5 +1,5 @@
 [core]
-	editor = kak
+	editor = nvim
 	excludesfile = ~/.gitignore
 [alias]
 	co = checkout
