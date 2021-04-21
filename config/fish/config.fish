@@ -27,6 +27,14 @@ set --export EDITOR nvim
 source $fish_config_path/fzf.fish
 fzf_key_bindings
 
+# nnn
+source $fish_config_path/quitcd.fish
+set SELF %self
+set --export NNN_BMS 'd:~/Documents;c:~/.config;D:~/Downloads;C:~/Comics;m:~/Music'
+set --export NNN_PLUG 'r:run'
+set --export NNN_TRASH '1'
+set --export NNN_SEL "$XDG_CONFIG_HOME/nnn/.selection_$SELF"
+
 function has_command
     which $argv 2> /dev/null > /dev/null
 end
@@ -49,19 +57,6 @@ end
 
 function fish_greeting
     has_command fortune cowsay; and fortune | cowsay
-end
-
-function r
-    set tempfile (mktemp -t tmp.XXXXXX)
-    command ranger --choosedir=$tempfile $argv
-    if test -s $tempfile
-        set ranger_pwd (cat $tempfile)
-        if test -n $ranger_pwd -a -d $ranger_pwd
-            builtin cd -- $ranger_pwd
-        end
-    end
-
-    command rm -f -- $tempfile
 end
 
 function vim

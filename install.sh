@@ -42,14 +42,14 @@ link_file tmux.conf .tmux.conf
 link_file gitconfig .gitconfig
 link_file gitignore .gitignore
 
-# ranger
-link_file config/ranger .config/ranger
-
 # fish
 link_file config/fish .config/fish
 
 # kak
 link_file config/kak .config/kak
+
+# nnn
+link_file config/nnn .config/nnn
 
 # inputrc
 link_file config/inputrc .config/inputrc

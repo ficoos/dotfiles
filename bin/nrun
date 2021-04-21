@@ -1,0 +1,55 @@
+#!/usr/bin/python3
+
+import os
+import sys
+
+from gi.repository import Gio
+
+# hack to allow us to use sets to filter actual Gio.AppInfo
+class AppInfo:
+    def __init__(self, impl):
+        self._impl = impl
+
+    def __eq__(self, other):
+        return self._impl.get_id() == other._impl.get_id()
+
+    def __hash__(self):
+        return self._impl.get_id().__hash__()
+
+    def __getattr__(self, name):
+        return getattr(self._impl, name)
+
+def get_candidates(file: str) -> Gio.AppInfo:
+    content_type, val = Gio.content_type_guess(f'filename={file}', data=None)
+    return map(AppInfo, Gio.AppInfo.get_all_for_type(content_type))
+
+files = sys.argv[1:]
+candidates = set(get_candidates(files[0]))
+for f in files[1:]:
+    candidates.intersection_update(get_candidates(f))
+
+if len(candidates) == 0:
+    print("Failed to find application for selected files")
+    exit(1)
+
+# convert to a list so that it has order
+candidates = list(candidates)
+candidates.sort(key=lambda a: a.get_display_name())
+for i, candidate in enumerate(candidates):
+    print(f'{i + 1}: {candidate.get_display_name()}')
+
+choice = input("open with: ")
+try:
+    choice = int(choice) - 1
+except ValueError:
+    print("Invalid choice")
+    exit(1)
+
+if choice < 0 or choice >= len(candidates):
+    print("Choice out of range")
+    exit(1)
+
+devnull = open("/dev/null")
+os.dup2(1, devnull.fileno())
+os.dup2(2, devnull.fileno())
+os.execvp("gtk-launch", ("gtk-launch", candidates[choice].get_id(), *files))

@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+selection=${NNN_SEL:-${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.selection}
+if [ ! -f "$selection" ]
+then
+	selection=$(mktemp)
+	echo "$1" > "$selection"
+exec xargs -0 -a $selection -- nrun
