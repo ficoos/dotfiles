@@ -1,11 +1,13 @@
 [/]
 clock-show-date=true
-clock-show-weekday=false
+clock-show-weekday=true
 cursor-theme='Adwaita'
 enable-animations=true
 enable-hot-corners=false
-show-battery-percentage=true
+font-antialiasing='grayscale'
+font-hinting='slight'
 gtk-im-module='gtk-im-context-simple'
 gtk-theme='Adwaita'
 monospace-font-name='FiraCode Nerd Font 10'
+show-battery-percentage=true
 toolkit-accessibility=false
