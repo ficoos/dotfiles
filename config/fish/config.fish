@@ -19,9 +19,7 @@ set --export ANSIBLE_NOCOWS 1
 [ -n "$SSH_CONNECTION" ]; and set --export GDK_BACKEND x11
 
 # preferences
-if [ -z "$EDITOR" ]
-    set --export EDITOR kak
-end
+set --export EDITOR nvim
 
 # bind ctrl+t to fzf-file-widget
 # bind ctrl+r to fzf-history-widget
