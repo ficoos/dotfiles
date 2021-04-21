@@ -12,9 +12,6 @@ enable_copr smizrahi/tgt
 enable_copr gnumdk/lollypop
 enable_copr jkonecny/kakoune
 
-# configure pulseaudio
-grep /etc/pulse/daemon.conf -e '^flat-volumes = no' > /dev/null || \
-    sudo sed /etc/pulse/daemon.conf -i -e 's:;\?\s*\(flat-volumes\s*=\s*\)\w\+:\1no:g'
 install_package $(cat packages.fedora)
 
 # install fonts
